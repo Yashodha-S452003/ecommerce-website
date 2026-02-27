@@ -6,7 +6,7 @@ pipeline {
         DOCKERHUB_USERNAME = 'yashodha'
         DOCKER_IMAGE = 'webapp'
         DOCKERHUB_REPO = 'my-website'
-        VERSION = '$BUILD_ID'
+        VERSION = "${BUILD_ID}"
         CONTAINER_NAME = 'app'
         CONTAINER_PORT = '8005'
         REQUEST_PORT = '80'
@@ -30,6 +30,25 @@ pipeline {
                 """
             }
         }
+         stage("Docker Login") {
+    steps {
+        withCredentials([usernamePassword(credentialsId: 'dockerhub-cred', 
+        usernameVariable: 'DOCKER_USER', 
+        passwordVariable: 'DOCKER_PASS')]) {
+            sh '''
+            echo "$DOCKER_PASS" | sudo docker login -u "$DOCKER_USER" --password-stdin
+            '''
+        }
+    }
+}
+        stage("Docker Push") {
+    steps {
+        sh """
+        sudo docker push ${DOCKERHUB_USERNAME}/${DOCKERHUB_REPO}:${VERSION}
+        sudo docker push ${DOCKERHUB_USERNAME}/${DOCKERHUB_REPO}:latest
+        """
+    }
+}
         stage("Docker Images"){
             steps {
                 sh "sudo docker images"
@@ -70,5 +89,6 @@ pipeline {
                 sh "sudo docker rmi -f ${DOCKERHUB_USERNAME}/${DOCKERHUB_REPO}:${VERSION}"
             }
         }
+       
     }
 }
