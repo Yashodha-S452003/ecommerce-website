@@ -3,12 +3,12 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_USERNAME = 'sakit333'
+        DOCKERHUB_USERNAME = 'yashodha'
         DOCKER_IMAGE = 'webapp'
-        DOCKERHUB_REPO = 'zepto-brocode'
+        DOCKERHUB_REPO = 'my-website'
         VERSION = '$BUILD_ID'
         CONTAINER_NAME = 'app'
-        CONTAINER_PORT = '8003'
+        CONTAINER_PORT = '8005'
         REQUEST_PORT = '80'
     }
     stages {
